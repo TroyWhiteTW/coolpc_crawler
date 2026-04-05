@@ -1,8 +1,8 @@
 [project]
 name = "coolpc-crawler"
-version = "0.1.0"
-description = "Add your description here"
-requires-python = ">=3.9"
+version = "0.2.0"
+description = "原價屋 (CoolPC) 商品價格爬蟲"
+requires-python = "==3.9.*"
 dependencies = [
     "beautifulsoup4>=4.14.3",
     "requests>=2.32.5",
