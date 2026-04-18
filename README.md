@@ -61,9 +61,23 @@ Use `--all` to scrape all 30 categories.
 ├── crawler/
 │   ├── models.py           # Product dataclass + MAIN_CATEGORIES config
 │   └── scraper.py          # fetch_page() + parse_products()
-├── output/                 # CSV output directory (gitignored)
+├── output/                 # CSV 輸出目錄 (tracked) / CSV output directory (tracked by Git)
 └── pyproject.toml
 ```
+
+## 自動排程 / Scheduled Crawling
+
+透過 GitHub Actions 自動定時爬取，無需手動執行。
+
+Automated crawling via GitHub Actions — no manual execution needed.
+
+| 台灣時間 / Taiwan Time | 模式 / Mode | 說明 / Description |
+|---|---|---|
+| 09:00 / 15:00 / 21:00 | `--all` (ALL) | All 30 categories |
+| 12:00 / 18:00 | default (MAIN) | 10 main component categories |
+
+- commit 訊息格式 / Commit message format: `crawl: 2026-04-18 09:00 ALL`
+- 支援從 GitHub Actions 頁面手動觸發，可選 MAIN 或 ALL / Supports manual trigger via `workflow_dispatch` with MAIN/ALL mode selection
 
 ## License
 

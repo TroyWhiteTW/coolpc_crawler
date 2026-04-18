@@ -1,5 +1,5 @@
-# Output
-output/
+# Output (tracked for GitHub Actions auto-commit)
+# output/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

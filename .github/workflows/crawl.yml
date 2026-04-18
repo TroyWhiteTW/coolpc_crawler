@@ -1,0 +1,85 @@
+name: Scheduled Crawl
+
+on:
+  schedule:
+    # UTC 時間（台灣 UTC+8）：09:00, 12:00, 15:00, 18:00, 21:00
+    # UTC times (Taiwan UTC+8): 09:00, 12:00, 15:00, 18:00, 21:00
+    - cron: '0 1 * * *'
+    - cron: '0 4 * * *'
+    - cron: '0 7 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Crawl mode'
+        required: true
+        default: 'MAIN'
+        type: choice
+        options:
+          - MAIN
+          - ALL
+
+# 確保同時間只有一個 crawl 在執行，避免 push 衝突
+# Ensure only one crawl runs at a time to prevent push conflicts
+concurrency:
+  group: crawl
+  cancel-in-progress: false
+
+# 授予寫入權限，讓 bot 可以 push commit
+# Grant write permission so the bot can push commits
+permissions:
+  contents: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Determine crawl mode
+        id: mode
+        run: |
+          # 手動觸發：使用使用者選擇的模式 / Manual trigger: use user-selected mode
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ inputs.mode }}" = "ALL" ]; then
+              echo "flag=--all" >> "$GITHUB_OUTPUT"
+              echo "label=ALL" >> "$GITHUB_OUTPUT"
+            else
+              echo "flag=" >> "$GITHUB_OUTPUT"
+              echo "label=MAIN" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            # 排程觸發：台灣 09/15/21 (UTC 01/07/13) -> ALL，其餘 -> MAIN
+            # Scheduled: Taiwan 09/15/21 (UTC 01/07/13) -> ALL, others -> MAIN
+            HOUR=$(date -u '+%H')
+            if [ "$HOUR" = "01" ] || [ "$HOUR" = "07" ] || [ "$HOUR" = "13" ]; then
+              echo "flag=--all" >> "$GITHUB_OUTPUT"
+              echo "label=ALL" >> "$GITHUB_OUTPUT"
+            else
+              echo "flag=" >> "$GITHUB_OUTPUT"
+              echo "label=MAIN" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Run crawler
+        run: uv run python main.py crawl ${{ steps.mode.outputs.flag }}
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/
+          TAIWAN_TIME=$(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')
+          git diff --cached --quiet || git commit -m "crawl: ${TAIWAN_TIME} ${{ steps.mode.outputs.label }}"
+          git push
