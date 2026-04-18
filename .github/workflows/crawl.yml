@@ -4,11 +4,11 @@ on:
   schedule:
     # UTC 時間（台灣 UTC+8）：09:00, 12:00, 15:00, 18:00, 21:00
     # UTC times (Taiwan UTC+8): 09:00, 12:00, 15:00, 18:00, 21:00
-    - cron: '0 1 * * *'
-    - cron: '0 4 * * *'
-    - cron: '0 7 * * *'
-    - cron: '0 10 * * *'
-    - cron: '0 13 * * *'
+    - cron: '5 1 * * *'
+    - cron: '5 4 * * *'
+    - cron: '5 7 * * *'
+    - cron: '5 10 * * *'
+    - cron: '5 13 * * *'
   workflow_dispatch:
     inputs:
       mode:
