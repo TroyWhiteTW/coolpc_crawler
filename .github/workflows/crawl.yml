@@ -64,10 +64,10 @@ jobs:
               echo "label=MAIN" >> "$GITHUB_OUTPUT"
             fi
           else
-            # 排程觸發：台灣 09/15/21 (UTC 01/07/13) -> ALL，其餘 -> MAIN
-            # Scheduled: Taiwan 09/15/21 (UTC 01/07/13) -> ALL, others -> MAIN
-            HOUR=$(date -u '+%H')
-            if [ "$HOUR" = "01" ] || [ "$HOUR" = "07" ] || [ "$HOUR" = "13" ]; then
+            # 排程觸發：從 cron 表達式取 UTC 小時，避免延遲執行導致誤判
+            # Scheduled: extract UTC hour from cron expression to avoid delay mismatch
+            HOUR=$(echo "${{ github.event.schedule }}" | awk '{print $2}')
+            if [ "$HOUR" = "1" ] || [ "$HOUR" = "7" ] || [ "$HOUR" = "13" ]; then
               echo "flag=--all" >> "$GITHUB_OUTPUT"
               echo "label=ALL" >> "$GITHUB_OUTPUT"
             else
