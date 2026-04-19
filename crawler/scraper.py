@@ -13,7 +13,14 @@ USER_AGENT = (
     "Chrome/125.0.0.0 Safari/537.36"
 )
 PRICE_RE = re.compile(r"\$(\d[\d,]*)")
-REMARK_RE = re.compile(r"【(現貨|訂|客訂|限組裝)】")
+# 備註標記正面表列，需要新增時在此列表添加即可
+# Remark patterns whitelist — add new patterns here as needed
+REMARK_PATTERNS = [
+    r"~(限組裝)~",
+    r"【(限組裝)】",
+    r"【(客訂)】",
+]
+REMARK_RE = re.compile("|".join(REMARK_PATTERNS))
 SELECT_NAME_RE = re.compile(r"^n(\d+)$")
 
 
@@ -92,12 +99,23 @@ def parse_products(
 
                 price = int(price_match.group(1).replace(",", ""))
 
-                # 從價格符號前截取商品名稱
-                name = PRICE_RE.split(text)[0].rstrip(", ").strip()
+                # 從價格符號前截取商品名稱 Extract product name before price
+                name = PRICE_RE.split(text)[0].rstrip(", ")
 
-                # 備註標記（現貨、訂、客訂、限組裝等）
-                remarks = REMARK_RE.findall(text)
+                # 備註標記：匹配後從 name 移除，結果 trim
+                # Remark tags: extract from name, then strip
+                raw_matches = REMARK_RE.findall(name)
+                # findall 回傳 tuple（多 group），取非空值去重
+                # findall returns tuples (multi-group), pick non-empty, deduplicate
+                seen = set()
+                remarks = []
+                for m in raw_matches:
+                    tag = next(g for g in m if g) if isinstance(m, tuple) else m
+                    if tag not in seen:
+                        seen.add(tag)
+                        remarks.append(tag)
                 remark = "/".join(remarks)
+                name = REMARK_RE.sub("", name).strip()
 
                 products.append(
                     Product(
