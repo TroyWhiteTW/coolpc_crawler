@@ -85,6 +85,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
-          TAIWAN_TIME=$(date '+%Y-%m-%d %H:%M')
-          git diff --cached --quiet || git commit -m "crawl: ${TAIWAN_TIME} ${{ steps.mode.outputs.label }}"
+          # 排程時間 + 實際執行時間 / Scheduled time + actual execution time
+          SCHEDULED="${{ github.event.schedule }}"
+          ACTUAL=$(date '+%Y-%m-%d %H:%M')
+          if [ -n "$SCHEDULED" ]; then
+            # 從 cron 取 UTC 時分，轉換為台灣時間 / Extract UTC HH:MM from cron, convert to Taiwan time
+            CRON_MIN=$(echo "$SCHEDULED" | awk '{print $1}')
+            CRON_HOUR=$(echo "$SCHEDULED" | awk '{print $2}')
+            TW_HOUR=$(( (CRON_HOUR + 8) % 24 ))
+            CRON_TW=$(printf "%02d:%02d" "$TW_HOUR" "$CRON_MIN")
+            MSG="crawl: (cron ${CRON_TW}) ${ACTUAL} ${{ steps.mode.outputs.label }}"
+          else
+            MSG="crawl: ${ACTUAL} ${{ steps.mode.outputs.label }}"
+          fi
+          git diff --cached --quiet || git commit -m "$MSG"
           git push
