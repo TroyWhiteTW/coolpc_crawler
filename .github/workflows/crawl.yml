@@ -79,10 +79,12 @@ jobs:
         run: uv run python main.py crawl ${{ steps.mode.outputs.flag }}
 
       - name: Commit and push
+        env:
+          TZ: Asia/Taipei
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
-          TAIWAN_TIME=$(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')
+          TAIWAN_TIME=$(date '+%Y-%m-%d %H:%M')
           git diff --cached --quiet || git commit -m "crawl: ${TAIWAN_TIME} ${{ steps.mode.outputs.label }}"
           git push
