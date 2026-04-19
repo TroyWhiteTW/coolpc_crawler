@@ -28,7 +28,7 @@ def fetch_page() -> str:
     """抓取原價屋估價頁面，回傳 HTML 字串。"""
     resp = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=30)
     resp.raise_for_status()
-    resp.encoding = "big5"
+    resp.encoding = "big5hkscs"
     return resp.text
 
 
