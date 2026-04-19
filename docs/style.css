@@ -511,7 +511,7 @@ body {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .compare-table thead {
@@ -538,11 +538,13 @@ body {
   border-right: none;
 }
 
-/* 欄位寬度 Column widths */
-.th-name { width: auto; }
-.th-price { width: 110px; }
-.th-diff { width: 110px; }
-.th-status { width: 90px; }
+/* 欄位寬度 Column widths — auto layout, only constrain non-text columns */
+.th-name { white-space: nowrap; }
+.th-remark { white-space: nowrap; }
+.th-price { white-space: nowrap; }
+.th-diff { white-space: nowrap; }
+.th-pct { white-space: nowrap; }
+.th-status { white-space: nowrap; }
 
 .compare-table td {
   padding: 10px 12px;
@@ -587,6 +589,16 @@ body {
   font-style: italic;
 }
 
+.td-remark {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: left;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .td-diff {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -598,6 +610,18 @@ body {
 .td-diff.up { color: var(--red); }
 .td-diff.down { color: var(--green); }
 .td-diff.same { color: var(--text-muted); }
+
+.td-pct {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.td-pct.up { color: var(--red); }
+.td-pct.down { color: var(--green); }
+.td-pct.same { color: var(--text-muted); }
 
 .td-status {
   text-align: center;
@@ -685,17 +709,25 @@ body {
   .selector-group {
     flex-direction: column;
     gap: 10px;
+    width: 100%;
   }
-  .selector { min-width: 0; }
+  .selector { min-width: 0; width: 100%; }
   .cascading-select {
-    flex-wrap: wrap;
+    display: flex;
+    flex-wrap: nowrap;
     gap: 6px;
+    width: 100%;
   }
-  .cascading-select .select-wrap { flex: 1; min-width: 0; }
-  .cascading-select .select-wrap-entry { flex-basis: 100%; }
+  .cascading-select .select-wrap { flex: 1; min-width: 0; flex-shrink: 1; }
+  .cascading-select .select-wrap-entry { flex: 2; min-width: 0; }
   .select-wrap select {
-    padding: 8px 30px 8px 10px;
-    font-size: 13px;
+    width: 100%;
+    padding: 8px 26px 8px 8px;
+    font-size: 12px;
+  }
+  .select-wrap::after {
+    right: 8px;
+    font-size: 12px;
   }
   .selector-vs {
     text-align: center;
@@ -736,10 +768,18 @@ body {
   .compare-table .td-name {
     flex-basis: 100%;
     font-size: 12px;
+    margin-bottom: 2px;
+    max-width: none;
+  }
+  /* 備註佔滿一行 Remark takes full row */
+  .compare-table .td-remark {
+    flex-basis: 100%;
+    font-size: 11px;
     margin-bottom: 4px;
     max-width: none;
   }
-  /* 價格、價差、狀態排成一行 Prices, diff, status in one row */
+  .compare-table .td-remark:empty { display: none; }
+  /* 價格、價差、百分比、狀態排成一行 Prices, diff, pct, status in one row */
   .compare-table .td-price {
     font-size: 12px;
   }
@@ -749,9 +789,10 @@ body {
     font-family: var(--font-sans);
     margin-right: 2px;
   }
-  .compare-table .td-price:nth-child(2)::before { content: 'A '; }
-  .compare-table .td-price:nth-child(3)::before { content: 'B '; }
+  .compare-table .td-price:nth-child(3)::before { content: 'A '; }
+  .compare-table .td-price:nth-child(4)::before { content: 'B '; }
   .compare-table .td-diff { font-size: 12px; }
+  .compare-table .td-pct { font-size: 11px; }
   .compare-table .td-status { margin-left: auto; }
   .badge { font-size: 10px; padding: 2px 8px; }
 }

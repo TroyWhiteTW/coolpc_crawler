@@ -68,6 +68,14 @@ function formatDiff(diff) {
   return sign + '$' + diff.toLocaleString();
 }
 
+// 格式化漲跌幅百分比 Format percentage change
+function formatPct(pct) {
+  if (pct == null) return '—';
+  if (pct === 0) return '0%';
+  const sign = pct > 0 ? '+' : '';
+  return sign + pct.toFixed(1) + '%';
+}
+
 // ── CSV 載入 Load CSV via PapaParse ──
 function loadCSV(filename) {
   return new Promise((resolve, reject) => {
@@ -288,7 +296,16 @@ function buildComparison(fileA, fileB) {
       status = 'removed';
     }
 
-    compareResults.push({ name, category, priceA, priceB, diff, status });
+    const remarkA = a ? (a.remark || '') : '';
+    const remarkB = b ? (b.remark || '') : '';
+    const remark = remarkB || remarkA;
+    // 漲跌幅百分比 Percentage change based on old price
+    let pct = null;
+    if (diff != null && priceA != null && priceA !== 0) {
+      pct = (diff / priceA) * 100;
+    }
+
+    compareResults.push({ name, category, priceA, priceB, diff, pct, remark, status });
   });
 
   updateStats();
@@ -374,9 +391,11 @@ function renderGroups() {
       table.innerHTML =
         '<thead><tr>' +
           '<th class="th-name">商品名稱</th>' +
+          '<th class="th-remark">備註</th>' +
           '<th class="th-price">舊 (A)</th>' +
           '<th class="th-price">新 (B)</th>' +
           '<th class="th-diff">價差</th>' +
+          '<th class="th-pct">%</th>' +
           '<th class="th-status">狀態</th>' +
         '</tr></thead>';
 
@@ -388,10 +407,13 @@ function renderGroups() {
 
         tr.innerHTML =
           '<td class="td-name">' + escapeHtml(r.name) + '</td>' +
+          '<td class="td-remark">' + escapeHtml(r.remark) + '</td>' +
           '<td class="td-price' + (r.priceA == null ? ' empty' : '') + '">' + formatPrice(r.priceA) + '</td>' +
           '<td class="td-price' + (r.priceB == null ? ' empty' : '') + '">' + formatPrice(r.priceB) + '</td>' +
           '<td class="td-diff ' + (r.diff > 0 ? 'up' : r.diff < 0 ? 'down' : 'same') + '">' +
             (r.diff != null ? formatDiff(r.diff) : '—') + '</td>' +
+          '<td class="td-pct ' + (r.diff > 0 ? 'up' : r.diff < 0 ? 'down' : 'same') + '">' +
+            formatPct(r.pct) + '</td>' +
           '<td class="td-status">' + statusBadge(r.status) + '</td>';
 
         tbody.appendChild(tr);
