@@ -62,6 +62,12 @@ Use `--all` to scrape all 30 categories.
 │   ├── models.py           # Product dataclass + MAIN_CATEGORIES config
 │   └── scraper.py          # fetch_page() + parse_products()
 ├── output/                 # CSV 輸出目錄 (tracked) / CSV output directory (tracked by Git)
+├── docs/                   # GitHub Pages 前端頁面 / Frontend pages for GitHub Pages
+│   ├── index.html          # 價格對比主頁面 / Price comparison page
+│   ├── style.css
+│   ├── app.js
+│   └── crawl_history.json  # 爬取歷史清單（自動產生）/ Crawl history list (auto-generated)
+├── index.html              # Root redirect → docs/index.html
 └── pyproject.toml
 ```
 
@@ -81,6 +87,17 @@ Automated crawling via GitHub Actions — no manual execution needed.
 
 - commit 訊息格式 / Commit message format: `crawl: 2026-04-18 09:05 ALL`
 - 支援從 GitHub Actions 頁面手動觸發，可選 MAIN 或 ALL / Supports manual trigger via `workflow_dispatch` with MAIN/ALL mode selection
+
+## 價格對比頁面 / Price Comparison Page
+
+透過 GitHub Pages 提供靜態價格對比頁面，可選擇兩份爬取快照進行比較。
+
+A static price comparison page is served via GitHub Pages, allowing you to compare two crawl snapshots side by side.
+
+- GitHub Pages 來源設為 `/`（repo root）/ GitHub Pages source is set to `/` (repo root)
+- 頁面入口：`docs/index.html` / Entry point: `docs/index.html`
+- 支援年月分級選擇、分類摺疊、漲跌標示、MAIN/ALL 模式自動交集比較
+- Features: cascading year/month/entry selectors, collapsible categories, price change indicators, automatic MAIN/ALL mode intersection
 
 ## License
 

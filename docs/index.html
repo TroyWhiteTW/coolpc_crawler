@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>原價屋價格對比</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect x="2" y="8" width="4" height="18" rx="1" fill="var(--accent)"/>
+            <rect x="8" y="4" width="4" height="22" rx="1" fill="var(--accent)" opacity="0.7"/>
+            <rect x="14" y="12" width="4" height="14" rx="1" fill="var(--accent)" opacity="0.5"/>
+            <rect x="20" y="2" width="4" height="24" rx="1" fill="var(--accent)" opacity="0.85"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">原價屋價格對比</h1>
+          <p class="brand-sub">CoolPC Price Comparator</p>
+        </div>
+      </div>
+      <div class="header-meta" id="headerMeta"></div>
+    </div>
+  </header>
+
+  <!-- Controls -->
+  <section class="controls-bar">
+    <div class="controls-inner">
+      <div class="selector-group">
+        <div class="selector">
+          <label class="selector-label">舊 (A)</label>
+          <div class="cascading-select">
+            <div class="select-wrap">
+              <select id="selectA_year"></select>
+            </div>
+            <div class="select-wrap">
+              <select id="selectA_month"></select>
+            </div>
+            <div class="select-wrap select-wrap-entry">
+              <select id="selectA_entry"></select>
+            </div>
+          </div>
+        </div>
+        <div class="selector-vs">
+          <span>VS</span>
+        </div>
+        <div class="selector">
+          <label class="selector-label">新 (B)</label>
+          <div class="cascading-select">
+            <div class="select-wrap">
+              <select id="selectB_year"></select>
+            </div>
+            <div class="select-wrap">
+              <select id="selectB_month"></select>
+            </div>
+            <div class="select-wrap select-wrap-entry">
+              <select id="selectB_entry"></select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-compare" id="btnCompare">
+        <span class="btn-icon">⟳</span> 比較
+      </button>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p>載入資料中…</p>
+  </div>
+
+  <!-- Main content -->
+  <main class="main-content" id="mainContent" style="display:none;">
+
+    <!-- Stats -->
+    <section class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">總商品數</div>
+      </div>
+      <div class="stat-card stat-changed">
+        <div class="stat-value" id="statChanged">0</div>
+        <div class="stat-label">價格異動</div>
+      </div>
+      <div class="stat-card stat-up">
+        <div class="stat-value" id="statUp">0</div>
+        <div class="stat-label">漲價</div>
+      </div>
+      <div class="stat-card stat-down">
+        <div class="stat-value" id="statDown">0</div>
+        <div class="stat-label">降價</div>
+      </div>
+      <div class="stat-card stat-new">
+        <div class="stat-value" id="statNew">0</div>
+        <div class="stat-label">新增</div>
+      </div>
+      <div class="stat-card stat-removed">
+        <div class="stat-value" id="statRemoved">0</div>
+        <div class="stat-label">下架</div>
+      </div>
+    </section>
+
+    <!-- Mode mismatch notice -->
+    <div class="mode-notice" id="modeNotice" style="display:none;"></div>
+
+    <!-- View toggle -->
+    <section class="view-bar">
+      <div class="view-bar-inner">
+        <label class="toggle-label">
+          <input type="checkbox" id="toggleAll" checked>
+          <span class="toggle-switch"></span>
+          <span>顯示所有商品（含無異動）</span>
+        </label>
+        <div class="view-actions">
+          <button class="filter-toggle-btn" id="btnExpandAll">全部展開</button>
+          <button class="filter-toggle-btn" id="btnCollapseAll">全部收合</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category groups -->
+    <section class="groups-section" id="groupsSection"></section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>coolpc-crawler &middot; 資料來源：<a href="https://www.coolpc.com.tw/evaluate.php" target="_blank" rel="noopener">原價屋線上估價</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

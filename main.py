@@ -1,5 +1,7 @@
 import argparse
 import csv
+import glob
+import json
 import os
 from datetime import datetime
 
@@ -32,6 +34,43 @@ def crawl(args):
             writer.writerow([p.category, p.subcategory, p.name, p.price, p.remark, scraped_at])
 
     print(f"Output: {output_path}")
+
+    # 僅在使用預設 output/ 路徑時更新爬取歷史（自訂路徑不納入）
+    # Only update crawl history when using default output/ path
+    if not args.output:
+        mode = "ALL" if args.all else "MAIN"
+        update_crawl_history(os.path.basename(output_path), mode)
+
+
+def update_crawl_history(new_file, new_mode):
+    """Append new entry to docs/crawl_history.json and sync with output/ directory.
+    將新紀錄加入爬取歷史 JSON，並同步 output/ 目錄狀態"""
+    os.makedirs("docs", exist_ok=True)
+    history_path = "docs/crawl_history.json"
+
+    # 讀取既有紀錄 Load existing entries
+    existing = {}
+    if os.path.exists(history_path):
+        with open(history_path, "r", encoding="utf-8") as f:
+            for entry in json.load(f):
+                existing[entry["file"]] = entry["mode"]
+
+    # 加入本次爬取紀錄 Add current crawl entry
+    existing[new_file] = new_mode
+
+    # 比對 output/ 實際檔案，移除已刪除的紀錄
+    # Sync with actual files in output/, remove deleted entries
+    actual_files = set(os.path.basename(f) for f in glob.glob("output/coolpc_*.csv"))
+    entries = [
+        {"file": f, "mode": m}
+        for f, m in existing.items()
+        if f in actual_files
+    ]
+    entries.sort(key=lambda e: e["file"], reverse=True)
+
+    with open(history_path, "w", encoding="utf-8") as f:
+        json.dump(entries, f, indent=2)
+    print(f"Crawl history updated: {history_path} ({len(entries)} files)")
 
 
 def main():
