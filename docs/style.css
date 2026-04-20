@@ -740,38 +740,47 @@ body {
   .category-header { padding: 12px 14px; }
   .category-name { font-size: 13px; }
 
-  /* 手機版表格改卡片式 Mobile: card layout */
+  /* 手機版表格改卡片式 Mobile: card layout
+     Row 1: name ··· remark
+     Row 2: A價格   B價格
+     Row 3: 價差  幅度 ··· 狀態  */
   .compare-table { table-layout: auto; }
   .compare-table thead { display: none; }
   .compare-table tbody tr {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
     padding: 10px 14px;
     border-bottom: 1px solid var(--border-light);
-    gap: 4px 12px;
-    align-items: center;
+    gap: 3px 10px;
+    align-items: baseline;
   }
   .compare-table tbody tr:last-child { border-bottom: none; }
   .compare-table td {
     border: none;
     padding: 0;
   }
-  /* 商品名稱佔滿一行 Name takes full row */
+  /* Row 1: name + remark */
   .compare-table .td-name {
-    flex-basis: 100%;
+    grid-column: 1 / 3;
+    grid-row: 1;
     font-size: 12px;
-    margin-bottom: 2px;
     max-width: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  /* 備註佔滿一行 Remark takes full row */
   .compare-table .td-remark {
-    flex-basis: 100%;
+    grid-column: 3;
+    grid-row: 1;
     font-size: 11px;
-    margin-bottom: 4px;
     max-width: none;
+    text-align: right;
+    white-space: nowrap;
   }
-  .compare-table .td-remark:empty { display: none; }
-  /* 價格、價差、百分比、狀態排成一行 Prices, diff, pct, status in one row */
+  .compare-table .td-remark:empty {
+    display: none;
+  }
+  /* Row 2: priceA + priceB */
   .compare-table .td-price {
     font-size: 12px;
   }
@@ -783,9 +792,12 @@ body {
   }
   .compare-table .td-price:nth-child(3)::before { content: 'A '; }
   .compare-table .td-price:nth-child(4)::before { content: 'B '; }
-  .compare-table .td-diff { font-size: 12px; }
-  .compare-table .td-pct { font-size: 11px; }
-  .compare-table .td-status { margin-left: auto; }
+  .compare-table .td-price:nth-child(3) { grid-column: 1; grid-row: 2; }
+  .compare-table .td-price:nth-child(4) { grid-column: 2; grid-row: 2; }
+  /* Row 3: diff + pct + status */
+  .compare-table .td-diff { grid-column: 1; grid-row: 3; font-size: 12px; }
+  .compare-table .td-pct { grid-column: 2; grid-row: 3; font-size: 11px; }
+  .compare-table .td-status { grid-column: 3; grid-row: 3; text-align: right; }
   .badge { font-size: 10px; padding: 2px 8px; }
 }
 
