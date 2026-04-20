@@ -732,6 +732,7 @@ body {
   .selector-vs {
     text-align: center;
     padding: 0;
+    width: 100%;
   }
   .btn-compare { width: 100%; justify-content: center; }
   .stats-bar {

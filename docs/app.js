@@ -195,7 +195,7 @@ async function init() {
     bindCascade('A');
     bindCascade('B');
 
-    headerMeta.textContent = '共 ' + historyEntries.length + ' 筆紀錄';
+    headerMeta.textContent = '共 ' + historyEntries.length + ' 筆歷史紀錄';
 
     await runComparison();
   } catch (err) {
