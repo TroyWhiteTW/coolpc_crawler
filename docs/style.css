@@ -793,10 +793,10 @@ body {
   .compare-table .td-price:nth-child(4)::before { content: 'B '; }
   .compare-table .td-price:nth-child(3) { grid-column: 1; grid-row: 2; }
   .compare-table .td-price:nth-child(4) { grid-column: 3; grid-row: 2; text-align: right; }
-  /* Row 3: diff + pct ··· status (分散對齊) */
-  .compare-table .td-diff { grid-column: 1; grid-row: 3; font-size: 12px; }
-  .compare-table .td-pct { grid-column: 2; grid-row: 3; font-size: 11px; }
-  .compare-table .td-status { grid-column: 3; grid-row: 3; text-align: right; }
+  /* Row 3: diff + pct ··· status (分散對齊、垂直置中) */
+  .compare-table .td-diff { grid-column: 1; grid-row: 3; font-size: 12px; align-self: center; }
+  .compare-table .td-pct { grid-column: 2; grid-row: 3; font-size: 11px; text-align: center; align-self: center; }
+  .compare-table .td-status { grid-column: 3; grid-row: 3; text-align: right; align-self: center; }
   .badge { font-size: 10px; padding: 2px 8px; }
 }
 
