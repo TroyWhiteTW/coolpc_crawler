@@ -10,23 +10,27 @@ from crawler.scraper import fetch_page, parse_products
 
 
 def crawl(args):
-    # 抓取原價屋估價單資料
+    # 抓取原價屋估價單資料 Fetch CoolPC estimate page data
     print("Fetching CoolPC data...")
     html = fetch_page()
     category_filter = get_category_filter(fetch_all=args.all)
     products = parse_products(html, category_filter)
     print(f"Total products: {len(products)}")
 
-    # 決定輸出路徑
+    # 統一時間戳，確保檔名與資料一致
+    # Single timestamp for both filename and CSV data consistency
+    now = datetime.now()
+
+    # 決定輸出路徑 Determine output path
     if args.output:
         output_path = args.output
     else:
         os.makedirs("output", exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = now.strftime("%Y%m%d_%H%M%S")
         output_path = f"output/coolpc_{timestamp}.csv"
 
-    # 寫入 CSV
-    scraped_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # 寫入 CSV Write CSV
+    scraped_at = now.strftime("%Y-%m-%d %H:%M:%S")
     with open(output_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)
         writer.writerow(["category", "subcategory", "name", "price", "remark", "scraped_at"])
@@ -74,7 +78,7 @@ def update_crawl_history(new_file, new_mode):
 
 
 def main():
-    # CLI 入口，使用 argparse 子命令
+    # CLI 入口，使用 argparse 子命令 CLI entry point with argparse subcommands
     parser = argparse.ArgumentParser(description="CoolPC product price crawler")
     subparsers = parser.add_subparsers(dest="command")
 

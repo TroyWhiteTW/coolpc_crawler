@@ -27,7 +27,8 @@ SELECT_NAME_RE = re.compile(r"^n(\d+)$")
 
 
 def fetch_page() -> str:
-    """抓取原價屋估價頁面，回傳 HTML 字串。"""
+    """抓取原價屋估價頁面，回傳 HTML 字串。
+    Fetch CoolPC estimate page and return HTML string."""
     resp = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=30)
     resp.raise_for_status()
     resp.encoding = "big5hkscs"
@@ -35,7 +36,8 @@ def fetch_page() -> str:
 
 
 def _get_first_text(tag) -> str:
-    """取得 tag 的第一個直接文字節點（跳過子元素）。"""
+    """取得 tag 的第一個直接文字節點（跳過子元素）。
+    Return the first direct text node of a tag, skipping child elements."""
     for child in tag.children:
         if isinstance(child, NavigableString):
             text = child.strip()
