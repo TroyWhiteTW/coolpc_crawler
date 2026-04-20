@@ -352,10 +352,7 @@ body {
   gap: 12px;
 }
 
-.view-actions {
-  display: flex;
-  gap: 8px;
-}
+.toggle-text-short { display: none; }
 
 .filter-toggle-btn {
   padding: 4px 12px;
@@ -745,6 +742,8 @@ body {
   .stat-label { font-size: 11px; }
   .view-bar { padding: 0 16px; }
   .view-bar-inner { align-items: center; }
+  .toggle-text-full { display: none; }
+  .toggle-text-short { display: inline; }
   .groups-section { padding: 0 16px 32px; }
   .category-header { padding: 12px 14px; }
   .category-name { font-size: 13px; }
