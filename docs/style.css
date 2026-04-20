@@ -744,7 +744,7 @@ body {
   .stat-value { font-size: 20px; }
   .stat-label { font-size: 11px; }
   .view-bar { padding: 0 16px; }
-  .view-bar-inner { flex-direction: column; align-items: flex-start; }
+  .view-bar-inner { align-items: center; }
   .groups-section { padding: 0 16px 32px; }
   .category-header { padding: 12px 14px; }
   .category-name { font-size: 13px; }
