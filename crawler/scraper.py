@@ -16,6 +16,8 @@ PRICE_RE = re.compile(r"\$(\d[\d,]*)")
 # 備註標記正面表列，需要新增時在此列表添加即可
 # Remark patterns whitelist — add new patterns here as needed
 REMARK_PATTERNS = [
+    r"~(搭機價)~",
+    r"~(限整機)~",
     r"~(限組裝)~",
     r"【(限組裝)】",
     r"【(客訂)】",
