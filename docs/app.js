@@ -17,7 +17,7 @@ const groupsSection = document.getElementById('groupsSection');
 const toggleAll = document.getElementById('toggleAll');
 const headerMeta = document.getElementById('headerMeta');
 const modeNotice = document.getElementById('modeNotice');
-const btnToggleGroups = document.getElementById('btnToggleGroups');
+const toggleExpand = document.getElementById('toggleExpand');
 
 // 分級選單元素 Cascading select elements
 const selectors = {
@@ -462,11 +462,8 @@ toggleAll.addEventListener('change', () => {
   renderGroups();
 });
 
-let allExpanded = true;
-btnToggleGroups.addEventListener('click', () => {
-  allExpanded = !allExpanded;
-  setAllGroups(!allExpanded);
-  btnToggleGroups.textContent = allExpanded ? '全部收合' : '全部展開';
+toggleExpand.addEventListener('change', () => {
+  setAllGroups(!toggleExpand.checked);
 });
 
 // ── 啟動 Init ──
