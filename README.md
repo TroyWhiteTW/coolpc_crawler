@@ -1,23 +1,37 @@
-# coolpc-crawler
+# coolpc-crawler — 原價屋價格爬蟲與歷史比價工具
 
-爬取[原價屋線上估價](https://www.coolpc.com.tw/evaluate.php)的商品價格資料，分類整理後輸出 CSV。
+原價屋（CoolPC）商品價格爬蟲，定期爬取[原價屋線上估價](https://www.coolpc.com.tw/evaluate.php)的電腦零組件價格資料，分類整理後輸出 CSV，並提供歷史價格對比頁面，追蹤漲跌變化。
 
-Scrapes product pricing data from [CoolPC Online Estimator](https://www.coolpc.com.tw/evaluate.php) and exports it as a structured CSV.
+CoolPC price crawler and historical price comparison tool. Periodically scrapes PC component pricing data from [CoolPC Online Estimator](https://www.coolpc.com.tw/evaluate.php), exports structured CSV files, and provides a web-based price diff viewer to track price changes over time.
+
+### 主要功能 / Features
+
+1. **價格爬取** — 爬取原價屋線上估價的商品價格，依分類整理後輸出 CSV
+   **Price Scraping** — Crawl CoolPC product prices by category and export to CSV
+2. **歷史價格對比** — 比較不同時間點的價格快照，一目了然查看漲跌與異動（詳見下方對比頁面說明）
+   **Historical Price Comparison** — Compare price snapshots across dates to identify changes at a glance (see comparison page section below)
 
 ## 技術棧 / Tech Stack
 
-- Python 3.9 + [uv](https://github.com/astral-sh/uv)
-- beautifulsoup4 (HTML parsing) / requests (HTTP)
-- 目標網頁編碼為 Big5，所有資料在初始 HTML 中（無需 JS 渲染）
-- Target page is Big5-encoded; all data is in the initial HTML (no JS rendering required)
+- Python 3.9+（建議搭配 [uv](https://github.com/astral-sh/uv) 管理依賴，亦可直接以原生 Python + pip 執行）
+- Python 3.9+ (recommended with [uv](https://github.com/astral-sh/uv) for dependency management; also works with vanilla Python + pip)
+- beautifulsoup4（HTML 解析）/ requests（HTTP 請求）
+- 目標網頁編碼為 Big5，所有資料在初始 HTML 中，無需 JS 渲染
+- Target page is Big5-encoded; all data lives in the initial HTML — no JS rendering required
 
 ## 安裝 / Installation
+
+以下以 uv 為例（亦可改用 `pip install -r requirements.txt`）：
+Examples below use uv (you can substitute with `pip install -r requirements.txt`):
 
 ```bash
 uv sync
 ```
 
 ## 使用方式 / Usage
+
+以下以 uv 執行環境為例（若使用 pip，將 `uv run` 替換為直接執行即可）：
+Examples below use uv (if using pip, replace `uv run` with `python` directly):
 
 ```bash
 uv run python main.py crawl            # Only scrape 10 main component categories
@@ -94,7 +108,7 @@ Automated crawling via GitHub Actions — no manual execution needed.
 
 A static price comparison page is served via GitHub Pages, allowing you to compare two crawl snapshots side by side.
 
-- https://troywhitetw.github.io/coolpc_crawler/docs/index.html
+- <a href="https://troywhitetw.github.io/coolpc_crawler/docs/index.html" target="_blank">https://troywhitetw.github.io/coolpc_crawler/docs/index.html</a>
 - 支援年月分級選擇、分類摺疊、漲跌標示、MAIN/ALL 模式自動交集比較
 - Features: cascading year/month/entry selectors, collapsible categories, price change indicators, automatic MAIN/ALL mode intersection
 
