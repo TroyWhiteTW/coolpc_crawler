@@ -2,13 +2,13 @@ name: Scheduled Crawl
 
 on:
   schedule:
-    # UTC 時間（台灣 UTC+8）：09:00, 12:00, 15:00, 18:00, 21:00
-    # UTC times (Taiwan UTC+8): 09:00, 12:00, 15:00, 18:00, 21:00
-    - cron: '5 1 * * *'
-    - cron: '5 4 * * *'
+    # UTC 時間（台灣 UTC+8）：07:00, 11:00, 15:00, 19:00, 23:00
+    # UTC times (Taiwan UTC+8): 07:00, 11:00, 15:00, 19:00, 23:00
+    - cron: '5 23 * * *'
+    - cron: '5 3 * * *'
     - cron: '5 7 * * *'
-    - cron: '5 10 * * *'
-    - cron: '5 13 * * *'
+    - cron: '5 11 * * *'
+    - cron: '5 15 * * *'
   workflow_dispatch:
     inputs:
       mode:
@@ -67,7 +67,7 @@ jobs:
             # 排程觸發：從 cron 表達式取 UTC 小時，避免延遲執行導致誤判
             # Scheduled: extract UTC hour from cron expression to avoid delay mismatch
             HOUR=$(echo "${{ github.event.schedule }}" | awk '{print $2}')
-            if [ "$HOUR" = "1" ] || [ "$HOUR" = "7" ] || [ "$HOUR" = "13" ]; then
+            if [ "$HOUR" = "23" ] || [ "$HOUR" = "7" ] || [ "$HOUR" = "15" ]; then
               echo "flag=--all" >> "$GITHUB_OUTPUT"
               echo "label=ALL" >> "$GITHUB_OUTPUT"
             else

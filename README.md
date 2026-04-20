@@ -93,10 +93,11 @@ Automated crawling via GitHub Actions — no manual execution needed.
 
 | 台灣時間 / Taiwan Time | 模式 / Mode | 說明 / Description |
 |---|---|---|
-| 09:05 / 15:05 / 21:05 | `--all` (ALL) | All 30 categories |
-| 12:05 / 18:05 | default (MAIN) | 10 main component categories |
+| 07:05 / 15:05 / 23:05 | `--all` (ALL) | All 30 categories |
+| 11:05 / 19:05 | default (MAIN) | 10 main component categories |
 
 > ⏱ cron 偏移 5 分鐘以錯開整點高峰，減少 GitHub Actions 排程延遲。
+
 > ⏱ Cron offset by 5 minutes to avoid on-the-hour peaks and reduce GitHub Actions scheduling delays.
 
 - commit 訊息格式 / Commit message format: `crawl: 2026-04-18 09:05 ALL`
