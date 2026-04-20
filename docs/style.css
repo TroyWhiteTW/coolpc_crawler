@@ -741,18 +741,17 @@ body {
   .category-name { font-size: 13px; }
 
   /* 手機版表格改卡片式 Mobile: card layout
-     Row 1: name ··· remark
-     Row 2: A價格   B價格
-     Row 3: 價差  幅度 ··· 狀態  */
+     Row 1: name ·················· remark
+     Row 2: A價格 ················· B價格
+     Row 3: 價差  幅度 ············ 狀態  */
   .compare-table { table-layout: auto; }
   .compare-table thead { display: none; }
   .compare-table tbody tr {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: auto 1fr auto;
     padding: 10px 14px;
     border-bottom: 1px solid var(--border-light);
     gap: 3px 10px;
-    align-items: baseline;
   }
   .compare-table tbody tr:last-child { border-bottom: none; }
   .compare-table td {
@@ -765,9 +764,8 @@ body {
     grid-row: 1;
     font-size: 12px;
     max-width: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-word;
+    line-height: 1.4;
   }
   .compare-table .td-remark {
     grid-column: 3;
@@ -776,11 +774,12 @@ body {
     max-width: none;
     text-align: right;
     white-space: nowrap;
+    align-self: center;
   }
   .compare-table .td-remark:empty {
     display: none;
   }
-  /* Row 2: priceA + priceB */
+  /* Row 2: priceA ··· priceB (分散對齊) */
   .compare-table .td-price {
     font-size: 12px;
   }
@@ -793,8 +792,8 @@ body {
   .compare-table .td-price:nth-child(3)::before { content: 'A '; }
   .compare-table .td-price:nth-child(4)::before { content: 'B '; }
   .compare-table .td-price:nth-child(3) { grid-column: 1; grid-row: 2; }
-  .compare-table .td-price:nth-child(4) { grid-column: 2; grid-row: 2; }
-  /* Row 3: diff + pct + status */
+  .compare-table .td-price:nth-child(4) { grid-column: 3; grid-row: 2; text-align: right; }
+  /* Row 3: diff + pct ··· status (分散對齊) */
   .compare-table .td-diff { grid-column: 1; grid-row: 3; font-size: 12px; }
   .compare-table .td-pct { grid-column: 2; grid-row: 3; font-size: 11px; }
   .compare-table .td-status { grid-column: 3; grid-row: 3; text-align: right; }
