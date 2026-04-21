@@ -113,9 +113,9 @@ A static price comparison page is served via GitHub Pages, allowing you to compa
 - 支援年月分級選擇、分類摺疊、漲跌標示、MAIN/ALL 模式自動交集比較
 - Features: cascading year/month/entry selectors, collapsible categories, price change indicators, automatic MAIN/ALL mode intersection
 
-## Known Limitations / 已知限制
+## 已知問題 / Known Issues
 
-- 舊價格 (A 側) 預設選擇當月第 6 筆資料，若當月不足 6 筆則選最後一筆，不會自動回推至前一個月
+1. 舊價格 (A 側) 預設選擇當月第 6 筆資料，若當月不足 6 筆則選最後一筆，不會自動回推至前一個月
 - The old price (A side) defaults to the 6th entry of the current month; if fewer than 6 entries exist, it picks the last one without rolling back to the previous month
 
 ## License
