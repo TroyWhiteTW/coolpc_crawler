@@ -109,7 +109,7 @@ Automated crawling via GitHub Actions — no manual execution needed.
 
 A static price comparison page is served via GitHub Pages, allowing you to compare two crawl snapshots side by side.
 
-- https://troywhitetw.github.io/coolpc_crawler/docs/index.html
+- https://troywhitetw.github.io/coolpc-crawler/docs/index.html
 - 支援年月分級選擇、分類摺疊、漲跌標示、MAIN/ALL 模式自動交集比較
 - Features: cascading year/month/entry selectors, collapsible categories, price change indicators, automatic MAIN/ALL mode intersection
 
