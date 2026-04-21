@@ -185,10 +185,12 @@ async function init() {
     // 初始化 B 側（右）：預設最新 Initialize B (right): default to newest
     initSide('B');
 
-    // 初始化 A 側（左）：預設次新 Initialize A (left): default to second newest
+    // 初始化 A 側（左）：預設第六筆 Initialize A (left): default to 6th entry
     initSide('A');
-    if (selectors.A.entry.options.length > 1) {
-      selectors.A.entry.selectedIndex = 1;
+    if (selectors.A.entry.options.length > 5) {
+      selectors.A.entry.selectedIndex = 5;
+    } else {
+      selectors.A.entry.selectedIndex = selectors.A.entry.options.length - 1;
     }
 
     bindCascade('A');

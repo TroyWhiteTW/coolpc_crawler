@@ -21,8 +21,8 @@ CoolPC price crawler and historical price comparison tool. Periodically scrapes 
 
 ## 安裝 / Installation
 
-以下以 uv 為例（亦可改用 `pip install -r requirements.txt`）：
-Examples below use uv (you can substitute with `pip install -r requirements.txt`):
+以下以 uv 為例（亦可直接以原生 Python + pip 執行）：
+Examples below use uv (also works with vanilla Python + pip):
 
 ```bash
 uv sync
@@ -112,6 +112,11 @@ A static price comparison page is served via GitHub Pages, allowing you to compa
 - https://troywhitetw.github.io/coolpc-crawler/docs/index.html
 - 支援年月分級選擇、分類摺疊、漲跌標示、MAIN/ALL 模式自動交集比較
 - Features: cascading year/month/entry selectors, collapsible categories, price change indicators, automatic MAIN/ALL mode intersection
+
+## Known Limitations / 已知限制
+
+- 舊價格 (A 側) 預設選擇當月第 6 筆資料，若當月不足 6 筆則選最後一筆，不會自動回推至前一個月
+- The old price (A side) defaults to the 6th entry of the current month; if fewer than 6 entries exist, it picks the last one without rolling back to the previous month
 
 ## License
 
