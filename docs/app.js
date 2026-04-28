@@ -76,14 +76,24 @@ function formatPct(pct) {
 }
 
 // ── CSV 載入 Load CSV via PapaParse ──
+// 已下載 CSV 快取，避免重複切換 A/B 時重抓
+// CSV cache to avoid re-downloading when switching A/B selections
+const csvCache = new Map();
+
 function loadCSV(filename) {
+  if (csvCache.has(filename)) {
+    return Promise.resolve(csvCache.get(filename));
+  }
   return new Promise((resolve, reject) => {
     const url = '../output/' + filename;
     Papa.parse(url, {
       download: true,
       header: true,
       skipEmptyLines: true,
-      complete: (results) => resolve(results.data),
+      complete: (results) => {
+        csvCache.set(filename, results.data);
+        resolve(results.data);
+      },
       error: (err) => reject(err),
     });
   });

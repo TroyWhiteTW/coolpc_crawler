@@ -15,9 +15,10 @@ CoolPC price crawler and historical price comparison tool. Periodically scrapes 
 
 - Python 3.9+（建議搭配 [uv](https://github.com/astral-sh/uv) 管理依賴，亦可直接以原生 Python + pip 執行）
 - Python 3.9+ (recommended with [uv](https://github.com/astral-sh/uv) for dependency management; also works with vanilla Python + pip)
-- beautifulsoup4（HTML 解析）/ requests（HTTP 請求）
-- 目標網頁編碼為 Big5，所有資料在初始 HTML 中，無需 JS 渲染
-- Target page is Big5-encoded; all data lives in the initial HTML — no JS rendering required
+- beautifulsoup4（HTML 解析）/ requests（HTTP 請求，內建 retry 與指數 backoff）
+- beautifulsoup4 (HTML parsing) / requests (HTTP, with retry and exponential backoff)
+- 目標網頁宣告為 Big5，但部分字元需以 `big5hkscs`（Big5 超集）解碼避免亂碼；所有資料在初始 HTML 中，無需 JS 渲染
+- Target page declares Big5, but decoding with `big5hkscs` (a Big5 superset) is required to avoid garbled characters; all data lives in the initial HTML — no JS rendering required
 
 ## 安裝 / Installation
 
@@ -67,6 +68,10 @@ Use `--all` to scrape all 30 categories.
 | `price` | 價格 (NTD) / Price in NTD |
 | `remark` | 備註標記，如「現貨」「訂」「客訂」「限組裝」，多個用 `/` 串接 / Remark tags (e.g. "In Stock", "Pre-order", "Assembly Only"), joined by `/` |
 | `scraped_at` | 抓取時間 / Scrape timestamp |
+
+> 備註標記為正面表列，定義於 `crawler/scraper.py` 的 `REMARK_PATTERNS`，新增類型直接加入列表即可。
+
+> Remark tags are explicitly whitelisted in `REMARK_PATTERNS` (in `crawler/scraper.py`); extend the list to add new tag patterns.
 
 ## 專案結構 / Project Structure
 

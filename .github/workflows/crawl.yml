@@ -34,6 +34,9 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   TZ: Asia/Taipei
+  # 哪些 UTC 小時的排程要跑 ALL 模式（其餘排程跑 MAIN）。對應 TW 07/15/23
+  # UTC hours whose scheduled run uses ALL mode (others use MAIN). Maps to TW 07/15/23
+  ALL_UTC_HOURS: '23 7 15'
 
 jobs:
   crawl:
@@ -54,27 +57,21 @@ jobs:
       - name: Determine crawl mode
         id: mode
         run: |
-          # 手動觸發：使用使用者選擇的模式 / Manual trigger: use user-selected mode
+          # 決定 LABEL：手動觸發用使用者選擇的；排程觸發比對 ALL_UTC_HOURS 集合
+          # Decide LABEL: manual uses user input; scheduled checks cron hour against ALL_UTC_HOURS
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            if [ "${{ inputs.mode }}" = "ALL" ]; then
-              echo "flag=--all" >> "$GITHUB_OUTPUT"
-              echo "label=ALL" >> "$GITHUB_OUTPUT"
-            else
-              echo "flag=" >> "$GITHUB_OUTPUT"
-              echo "label=MAIN" >> "$GITHUB_OUTPUT"
-            fi
+            LABEL="${{ inputs.mode }}"
           else
-            # 排程觸發：從 cron 表達式取 UTC 小時，避免延遲執行導致誤判
-            # Scheduled: extract UTC hour from cron expression to avoid delay mismatch
             HOUR=$(echo "${{ github.event.schedule }}" | awk '{print $2}')
-            if [ "$HOUR" = "23" ] || [ "$HOUR" = "7" ] || [ "$HOUR" = "15" ]; then
-              echo "flag=--all" >> "$GITHUB_OUTPUT"
-              echo "label=ALL" >> "$GITHUB_OUTPUT"
+            if [[ " $ALL_UTC_HOURS " == *" $HOUR "* ]]; then
+              LABEL="ALL"
             else
-              echo "flag=" >> "$GITHUB_OUTPUT"
-              echo "label=MAIN" >> "$GITHUB_OUTPUT"
+              LABEL="MAIN"
             fi
           fi
+          [ "$LABEL" = "ALL" ] && FLAG="--all" || FLAG=""
+          echo "flag=$FLAG" >> "$GITHUB_OUTPUT"
+          echo "label=$LABEL" >> "$GITHUB_OUTPUT"
 
       - name: Run crawler
         run: uv run python main.py crawl ${{ steps.mode.outputs.flag }}

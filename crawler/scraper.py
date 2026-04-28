@@ -1,4 +1,5 @@
 import re
+import time
 from typing import List, Optional, Set
 
 import requests
@@ -12,27 +13,47 @@ USER_AGENT = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/125.0.0.0 Safari/537.36"
 )
+# 重試設定：總嘗試次數與 backoff 起始秒數（指數倍增）
+# Retry config: total attempts and initial backoff seconds (exponential)
+MAX_ATTEMPTS = 3
+BACKOFF_BASE = 2.0
 PRICE_RE = re.compile(r"\$(\d[\d,]*)")
-# 備註標記正面表列，需要新增時在此列表添加即可
-# Remark patterns whitelist — add new patterns here as needed
+# 備註標記正面表列：含外圍符號的整段 pattern，需要新增時在此列表添加即可
+# Remark patterns whitelist (with delimiters) — add new patterns here as needed
 REMARK_PATTERNS = [
-    r"~(搭機價)~",
-    r"~(限整機)~",
-    r"~(限組裝)~",
-    r"【(限組裝)】",
-    r"【(客訂)】",
+    r"~搭機價~",
+    r"~限整機~",
+    r"~限組裝~",
+    r"【限組裝】",
+    r"【客訂】",
 ]
 REMARK_RE = re.compile("|".join(REMARK_PATTERNS))
+# 提取 tag 文字時要去掉的外圍符號 / Delimiter chars to strip when extracting tag text
+REMARK_DELIMS = "~【】"
 SELECT_NAME_RE = re.compile(r"^n(\d+)$")
 
 
 def fetch_page() -> str:
-    """抓取原價屋估價頁面，回傳 HTML 字串。
-    Fetch CoolPC estimate page and return HTML string."""
-    resp = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=30)
-    resp.raise_for_status()
-    resp.encoding = "big5hkscs"
-    return resp.text
+    """抓取原價屋估價頁面，回傳 HTML 字串。失敗時最多重試 MAX_ATTEMPTS 次。
+    Fetch CoolPC estimate page and return HTML string. Retry up to MAX_ATTEMPTS on failure."""
+    last_exc: Optional[Exception] = None
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        try:
+            resp = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=30)
+            resp.raise_for_status()
+            resp.encoding = "big5hkscs"
+            return resp.text
+        except requests.RequestException as exc:
+            last_exc = exc
+            if attempt < MAX_ATTEMPTS:
+                # 指數 backoff：2s, 4s, ...
+                # Exponential backoff
+                wait = BACKOFF_BASE ** attempt
+                print(f"Fetch attempt {attempt} failed: {exc}. Retrying in {wait:.1f}s...")
+                time.sleep(wait)
+    # 所有嘗試皆失敗，重新拋出最後一次的例外 / All attempts failed, re-raise the last exception
+    assert last_exc is not None
+    raise last_exc
 
 
 def _get_first_text(tag) -> str:
@@ -106,15 +127,12 @@ def parse_products(
                 # 從價格符號前截取商品名稱 Extract product name before price
                 name = PRICE_RE.split(text)[0].rstrip(", ")
 
-                # 備註標記：匹配後從 name 移除，結果 trim
-                # Remark tags: extract from name, then strip
-                raw_matches = REMARK_RE.findall(name)
-                # findall 回傳 tuple（多 group），取非空值去重
-                # findall returns tuples (multi-group), pick non-empty, deduplicate
+                # 備註標記：匹配整段（含外圍符號）後 strip 取 tag、去重，再從 name 移除
+                # Remark tags: match whole segment (with delimiters), strip to tag, dedupe, remove from name
                 seen = set()
                 remarks = []
-                for m in raw_matches:
-                    tag = next(g for g in m if g) if isinstance(m, tuple) else m
+                for match in REMARK_RE.finditer(name):
+                    tag = match.group(0).strip(REMARK_DELIMS)
                     if tag not in seen:
                         seen.add(tag)
                         remarks.append(tag)
