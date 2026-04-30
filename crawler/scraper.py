@@ -26,10 +26,12 @@ REMARK_PATTERNS = [
     r"~限組裝~",
     r"【限組裝】",
     r"【客訂】",
+    r"\[限組裝\]",
+    r"\[限搭機\]",
 ]
 REMARK_RE = re.compile("|".join(REMARK_PATTERNS))
 # 提取 tag 文字時要去掉的外圍符號 / Delimiter chars to strip when extracting tag text
-REMARK_DELIMS = "~【】"
+REMARK_DELIMS = "~【】[]"
 SELECT_NAME_RE = re.compile(r"^n(\d+)$")
 
 
