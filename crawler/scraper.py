@@ -11,7 +11,7 @@ URL = "https://www.coolpc.com.tw/evaluate.php"
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/125.0.0.0 Safari/537.36"
+    "Chrome/140.0.0.0 Safari/537.36"
 )
 # 重試設定：總嘗試次數與 backoff 起始秒數（指數倍增）
 # Retry config: total attempts and initial backoff seconds (exponential)
